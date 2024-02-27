@@ -13,8 +13,8 @@ services:
     build:
       context: ./mail-indexer-api
       args:
-        DB_USER: $DB_USER
-        DB_PASSWORD: $DB_PASSWORD
+        AUTH_USERNAME: $AUTH_USERNAME
+        AUTH_PASSWORD: $AUTH_PASSWORD
         DB_PORT: $DB_PORT
     ports:
       - "8080:8080"
@@ -22,8 +22,8 @@ services:
     image: public.ecr.aws/zinclabs/zinc:latest
 
     environment:
-      - ZINC_FIRST_ADMIN_USER=${DB_USER}
-      - ZINC_FIRST_ADMIN_PASSWORD=${DB_PASSWORD}
+      - ZINC_FIRST_ADMIN_USER=${AUTH_USERNAME}
+      - ZINC_FIRST_ADMIN_PASSWORD=${AUTH_PASSWORD}
       - ZINC_SERVER_PORT=${DB_PORT}
       - ZINC_DATA_PATH=/data
     ports:
