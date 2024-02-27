@@ -40,7 +40,7 @@ In the folder mail-indexer-api/db/maildir/, there are several folders with sampl
 
 # How to Run Aplication
 
-1. Clone this repository using the command `https://github.com/elpidiaskardia/email-indexer.git`
+1. Clone this repository using the command `git clone https://github.com/elpidiaskardia/email-indexer.git`
 2. Download the email database from http://www.cs.cmu.edu/~enron/enron_mail_20110402.tgz
 3. Download ZincSearch and configure the username and password.  https://zincsearch-docs.zinc.dev/quickstart/
 4. Run zincsearch.exe
