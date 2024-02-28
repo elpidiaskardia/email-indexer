@@ -29,7 +29,6 @@ func GetListEmails(searchParameter string, pagination models.PaginationParams) (
 	if err != nil {
 		return models.ZincsearchResult{}, err
 	}
-	defer resp.Body.Close()
 
 	var result models.ZincsearchResult
 	if err := handleResponse(resp, &result); err != nil {
@@ -46,6 +45,7 @@ func GetAllEmails(pagination models.PaginationParams) (models.ZincsearchResult, 
 		"from":  %d,
         "max_results": %d
     }`, (pagination.CurrentPage-1)*pagination.PageSize, pagination.PageSize)
+
 	req, err := makeRequest("POST", env.BaseURL+"emails/_search", strings.NewReader(query))
 	if err != nil {
 		return models.ZincsearchResult{}, err
@@ -55,7 +55,6 @@ func GetAllEmails(pagination models.PaginationParams) (models.ZincsearchResult, 
 	if err != nil {
 		return models.ZincsearchResult{}, err
 	}
-	defer resp.Body.Close()
 
 	var result models.ZincsearchResult
 	if err := handleResponse(resp, &result); err != nil {

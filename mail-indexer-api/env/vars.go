@@ -45,7 +45,7 @@ func init() {
 	if err != nil {
 		log.Fatal("Error loading the file .env:", err)
 	}
-    BaseURL = env["BASE_URL"]
+    BaseURL = env["ZINC_URL"]
     AuthUsername = env["AUTH_USERNAME"]
     AuthPassword = env["AUTH_PASSWORD"]
     ContentType = env["CONTENT_TYPE"]

@@ -7,34 +7,40 @@ import (
 	"net/http"
 )
 
-func handleRequest(w http.ResponseWriter, r *http.Request, getResultFunc func(models.PaginationParams) (models.ApiResult, error)) {
+// Responds with the result of the function using the result model.
+func handleRequest(writer http.ResponseWriter, request *http.Request, getResultFunc func(models.PaginationParams) (models.ApiResult, error)) {
 	var pagination models.PaginationParams
-	err := json.NewDecoder(r.Body).Decode(&pagination)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
+	if err := json.NewDecoder(request.Body).Decode(&pagination); err != nil {
+		handleError(writer, http.StatusBadRequest, "fail", err.Error())
 		return
 	}
 
 	result, err := getResultFunc(pagination)
-
-	w.Header().Set("Content-Type", "application/json")
-
 	if err != nil {
-		http.Error(w, "Service error", http.StatusInternalServerError)
+		handleError(writer, http.StatusInternalServerError, "fail", err.Error())
 		return
 	}
 
 	status := http.StatusOK
 	message := "Data Found"
-	if result.Result.Total == 0 {
-		status = http.StatusNotFound
-		message = "No Data Found"
-	}
-
 	result.Status = "Success"
 	result.Message = message
-	w.WriteHeader(status)
-	json.NewEncoder(w).Encode(result)
+
+	writer.Header().Set("Content-Type", "application/json")
+	writer.WriteHeader(status)
+	json.NewEncoder(writer).Encode(result)
+
+}
+
+// configures the response in case of an error.
+func handleError(writer http.ResponseWriter, status int, resultStatus, message string) {
+	var result models.ApiResult
+	result.Status = resultStatus
+	result.Message = message
+
+	writer.Header().Set("Content-Type", "application/json")
+	writer.WriteHeader(status)
+	json.NewEncoder(writer).Encode(result)
 }
 
 func GetEmailByParameter(w http.ResponseWriter, r *http.Request) {

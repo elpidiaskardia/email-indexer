@@ -6,32 +6,40 @@ import (
 	"net/http"
 )
 
-func NewRouter() http.Handler {
-	// Creamos un enrutador Chi
-	router := chi.NewRouter()
+// ConfigureMiddleware configures the middleware to handle CORS (Cross-Origin Resource Sharing).
+func ConfigureMiddleware() func(http.Handler) http.Handler {
+	return func(next http.Handler) http.Handler {
+		return http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
 
-	router.Use(middleware.Logger)
-	router.Use(middleware.Recoverer)
+			//Configuration CORS
+			writer.Header().Set("Access-Control-Allow-Origin", "*")
+			writer.Header().Set("Access-Control-Allow-Methods", "POST, OPTIONS")
+			writer.Header().Set("Access-Control-Allow-Headers", "Content-Type, Authorization")
 
-	//CORS
-	router.Use(func(next http.Handler) http.Handler {
-		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-	
-			w.Header().Set("Access-Control-Allow-Origin", "*")
-			w.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
-			w.Header().Set("Access-Control-Allow-Headers", "Content-Type, Authorization")
-
-			if r.Method == "OPTIONS" {
-				w.WriteHeader(http.StatusOK)
+			if request.Method == "OPTIONS" {
+				writer.WriteHeader(http.StatusOK)
 				return
 			}
 
-			next.ServeHTTP(w, r)
+			next.ServeHTTP(writer, request)
 		})
-	})
+	}
+}
+
+// ConfigureRouter sets up the router with middleware and routes.
+func ConfigureRouter() *chi.Mux {
+	router := chi.NewRouter()
+	router.Use(middleware.Logger)
+	router.Use(middleware.Recoverer)
+	router.Use(ConfigureMiddleware())
 
 	router.Post("/api/getEmailsByParameter", GetEmailByParameter)
 	router.Post("/api/getEmails", GetAllEmails)
 
 	return router
+}
+
+// NewRouter returns an HTTP handler configured with the router.
+func NewRouter() http.Handler {
+	return ConfigureRouter()
 }

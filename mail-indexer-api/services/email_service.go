@@ -8,21 +8,17 @@ import (
 
 func handleEmailsResponse(emails models.ZincsearchResult, err error) (models.ApiResult, error) {
 	if err != nil {
-		
 		return models.ApiResult{}, fmt.Errorf("failed to retrieve emails: %w", err)
 	}
-
 	result := models.ApiResult{
 		Result: models.EmailResult{
 			Total: emails.Hits.Total.Value,
 			Data:  make([]models.EmailData, len(emails.Hits.Hits)),
 		},
 	}
-
 	for i, emailHit := range emails.Hits.Hits {
 		result.Result.Data[i] = emailHit.Source
 	}
-
 	return result, nil
 }
 

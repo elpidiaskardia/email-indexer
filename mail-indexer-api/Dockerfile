@@ -22,16 +22,19 @@ COPY go.mod .
 RUN go mod download
 
 # Declare custom args
-ARG DB_USER \
-    DB_PASSWORD \
+ARG ZINC_URL \
+    AUTH_USERNAME \
+    AUTH_PASSWORD \
     DB_PORT
 
-ENV DB_USER=${DB_USER} \
-    DB_PASSWORD=${DB_PASSWORD} \
+ENV ZINC_URL=${ZINC_URL} \
+    AUTH_USERNAME=${AUTH_USERNAME} \
+    AUTH_PASSWORD=${AUTH_PASSWORD} \
     DB_PORT=${DB_PORT}
 
 # Copies all files from local to container
 COPY . .
+# Run the main.go in the db folder to load the database
 
 # Build
 RUN go build -o main .
