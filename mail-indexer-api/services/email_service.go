@@ -5,8 +5,8 @@ import (
 	"Api_Go/db/functions"
 	"Api_Go/models"
 )
-
-func handleEmailsResponse(emails models.ZincsearchResult, err error) (models.ApiResult, error) {
+//// HandleEmailsResponse handles the response of email search.
+func HandleEmailsResponse(emails models.ZincsearchResult, err error) (models.ApiResult, error) {
 	if err != nil {
 		return models.ApiResult{}, fmt.Errorf("failed to retrieve emails: %w", err)
 	}
@@ -21,13 +21,13 @@ func handleEmailsResponse(emails models.ZincsearchResult, err error) (models.Api
 	}
 	return result, nil
 }
-
+// GetEmailByParameter retrieves emails based on a search parameter and pagination.
 func GetEmailByParameter(searchParameter string, pagination models.PaginationParams) (models.ApiResult, error) {
 	emails, err := functions.GetListEmails(searchParameter, pagination)
-	return handleEmailsResponse(emails, err)
+	return HandleEmailsResponse(emails, err)
 }
-
+// GetAllEmails retrieves all emails with pagination.
 func GetAllEmails(pagination models.PaginationParams) (models.ApiResult, error) {
 	emails, err := functions.GetAllEmails(pagination)
-	return handleEmailsResponse(emails, err)
+	return HandleEmailsResponse(emails, err)
 }

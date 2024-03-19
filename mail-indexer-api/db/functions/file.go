@@ -4,7 +4,7 @@ import (
 	"Api_Go/models"
 	"bufio"
 	"bytes"
-	"io/ioutil"
+	"os"
 	"reflect"
 	"strings"
 )
@@ -20,7 +20,7 @@ func assignField(emailData *models.EmailData, key, value string) {
 }
 
 func ProcessFile(path string) (models.EmailData, error) {
-	data, err := ioutil.ReadFile(path)
+	data, err := os.ReadFile(path)
     if err != nil {
 		return models.EmailData{}, err
 	}

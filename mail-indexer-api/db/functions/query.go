@@ -18,7 +18,7 @@ func GetListEmails(searchParameter string, pagination models.PaginationParams) (
 		"sort_fields": ["-@timestamp"],
 		"from":  %d,
         "max_results": %d
-    }`, searchParameter, pagination.CurrentPage, pagination.PageSize)
+    }`, searchParameter, (pagination.CurrentPage-1)*pagination.PageSize, pagination.PageSize)
 
 	req, err := makeRequest("POST", env.BaseURL+"emails/_search", strings.NewReader(query))
 	if err != nil {

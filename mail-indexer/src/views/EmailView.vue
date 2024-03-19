@@ -38,19 +38,23 @@ const getAllEmails = async () => {
 
 
 const getEmailByParameter = async () => {
-  popupStore.showPopup(typePopup.Loading, "", "Loading...");
-  await emailService.getEmailByParameter()
-      .then(result =>  {
-        if (result.status == "Success") {
-          emails.value = result.result?.data || [];
-          totalItems.value = result.result.total;
-          popupStore.closePopup();
-        } else {
-          popupStore.showPopup(typePopup.Information, result.message);
-        }
-      }).catch(error => {
-        popupStore.showPopup(typePopup.Error, error.message, "Error");
-      })
+  if (searchStore.searchParameter.trim() != "") {
+      popupStore.showPopup(typePopup.Loading, "", "Loading...");
+      await emailService.getEmailByParameter()
+          .then(result =>  {
+            if (result.status == "Success") {
+              emails.value = result.result?.data || [];
+              totalItems.value = result.result.total;
+              popupStore.closePopup();
+            } else {
+              popupStore.showPopup(typePopup.Information, result.message);
+            }
+          }).catch(error => {
+            popupStore.showPopup(typePopup.Error, error.message, "Error");
+          })
+    }else{
+      getAllEmails();
+    }
 };
 function boldContent(content: string) {
   const regex = new RegExp(searchStore.searchParameter, 'gi');
@@ -112,10 +116,7 @@ const getRowClasses = computed(() => {
     'bg-gray-100': index % 2 !== 0,
   });
 });
-//computed
-const paginatedPersonas = computed(() => {
-  return emails.value;
-});
+
 
 const totalPages = computed(() => {
   if (totalItems.value > 0) {
@@ -164,7 +165,7 @@ onMounted(() => {
               </tr>
             </thead>
             <tbody>
-              <tr v-for="(email, index) in paginatedPersonas" :key="index" :class="getRowClasses(index)"
+              <tr v-for="(email, index) in emails" :key="index" :class="getRowClasses(index)"
                 @click="selectRow(index)">
                 <td class="py-2 px-4   border-darkblue  max-w-xs overflow-hidden">{{ email.subject }}</td>
                 <td class="py-2 px-4   border-darkblue max-w-xs overflow-hidden">{{ email.from }}</td>
